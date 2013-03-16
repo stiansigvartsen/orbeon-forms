@@ -754,8 +754,10 @@
                     <!-- For resources associated with Java test files -->
                     <sysproperty key="oxf.resources.priority.3" value="org.orbeon.oxf.resources.FilesystemResourceManagerFactory"/>
                     <sysproperty key="oxf.resources.priority.3.oxf.resources.filesystem.sandbox-directory" value="src/test/java"/>
+                    <sysproperty key="oxf.resources.priority.4" value="org.orbeon.oxf.resources.FilesystemResourceManagerFactory"/>
+                    <sysproperty key="oxf.resources.priority.4.oxf.resources.filesystem.sandbox-directory" value="src/main/java"/>
                     <!-- Classpath -->
-                    <sysproperty key="oxf.resources.priority.4" value="org.orbeon.oxf.resources.ClassLoaderResourceManagerFactory"/>
+                    <sysproperty key="oxf.resources.priority.5" value="org.orbeon.oxf.resources.ClassLoaderResourceManagerFactory"/>
                     <!-- Other properties -->
                     <sysproperty key="oxf.resources.common.min-reload-interval" value="50"/>
                     <sysproperty key="oxf.test.config" value="oxf:/ops/unit-tests/tests.xml"/>
@@ -999,6 +1001,15 @@
     <target name="exist-import-sample-data-to-localhost" depends="exist-task">
         <!-- Store data only -->
         <xdb:store uri="xmldb:exist://localhost:8080/orbeon/exist/xmlrpc/db" createcollection="true" createsubcollections="true" user="guest" password="guest">
+            <fileset dir="data">
+                <include name="orbeon/**"/>
+            </fileset>
+        </xdb:store>
+    </target>
+
+    <target name="exist-import-sample-data-to-www" depends="exist-task">
+        <!-- Store data only -->
+        <xdb:store uri="xmldb:exist://www.orbeon.com/exist/xmlrpc/db" createcollection="true" createsubcollections="true" user="orbeon" password="vbrowser">
             <fileset dir="data">
                 <include name="orbeon/**"/>
             </fileset>
