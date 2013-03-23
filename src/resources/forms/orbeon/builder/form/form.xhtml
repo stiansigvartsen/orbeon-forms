@@ -34,6 +34,7 @@
         <xh:script type="text/javascript" src="/forms/orbeon/builder/resources/cell/events.js"/>
         <xh:script type="text/javascript" src="/forms/orbeon/builder/resources/cell/action-icons.js"/>
         <xh:script type="text/javascript" src="/forms/orbeon/builder/resources/cell/placeholders.js"/>
+        <xh:script type="text/javascript" src="/forms/orbeon/builder/resources/cell/label-editor.js"/>
         <xh:script type="text/javascript" src="/forms/orbeon/builder/resources/cell/static-upload.js"/>
         <xh:script type="text/javascript" src="/forms/orbeon/builder/resources/section-grid-repeat/position.js"/>
         <xh:script type="text/javascript" src="/forms/orbeon/builder/resources/section-grid-repeat/section-editor.js"/>
@@ -411,7 +412,7 @@
                                 <xf:var name="control"       value="$td/*[1]"/><!-- may be empty! -->
                                 <xf:var name="control-id"    value="$control/@id"/>
                                 <xf:var name="has-control"   value="exists($control-id)"/>
-                                <xf:var name="fb-resources" value="xxf:get-variable('fr-resources-model', 'fr-form-resources')"/>
+                                <xf:var name="fb-resources"  value="xxf:get-variable('fr-resources-model', 'fr-form-resources')"/>
 
                                 <xh:span class="fb-grid-cell-icons">
                                     <!-- Expand cell down -->
@@ -681,7 +682,6 @@
                                     <xf:action ev:event="DOMActivate" type="xpath">gridOps:insertRowBelow(event('grid-id'), xs:integer(event('row-pos')))</xf:action>
                                 </xf:trigger>
                             </xh:div>
-                            <xf:input ref="instance('fb-variables')/section-new-label" class="fb-section-new-label" style="display: none"/>
 
                         </xf:group>
                         </xh:div>

@@ -17,6 +17,7 @@ package org.orbeon.oxf.util
 import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
 import org.orbeon.oxf.util.ScalaUtils._
+import scala.collection.mutable
 
 class ScalaUtilsTest extends AssertionsForJUnit {
 
@@ -92,7 +93,7 @@ class ScalaUtilsTest extends AssertionsForJUnit {
         val query    = """p1=v11&p2=v21&p1=v12&p2=&p2=v23&p1="""
         val expected = Seq("p1" → "v11", "p2" → "v21", "p1" → "v12", "p2" → "", "p2" → "v23", "p1" → "")
 
-        assert(expected === decodeSimpleQuery(Some(query)))
+        assert(expected === decodeSimpleQuery(query))
     }
 
     @Test def testGetFirstQueryParameter(): Unit = {
@@ -107,7 +108,7 @@ class ScalaUtilsTest extends AssertionsForJUnit {
     @Test def testEncodeSimpleQuery(): Unit = {
 
         val query1 = """p1=v11&p2=v21&p1=v12&p2=&p2=v23&p1="""
-        assert(query1 === encodeSimpleQuery(decodeSimpleQuery(Some(query1))))
+        assert(query1 === encodeSimpleQuery(decodeSimpleQuery(query1)))
 
         assert("name=%C3%89rik" === encodeSimpleQuery(Seq("name" → "Érik")))
     }
@@ -159,5 +160,35 @@ class ScalaUtilsTest extends AssertionsForJUnit {
 
         assert(collectByErasedType[Seq[String]](Seq("a")).isDefined)
         assert(collectByErasedType[Seq[String]](Seq(42)).isDefined) // erasure!
+    }
+
+    @Test def testFilterAndCapitalizeHeaders(): Unit = {
+
+        val arrays = Seq("Foo" → Array("foo1", "foo2"), "Bar" → Array("bar1", "bar2"))
+        val lists  = Seq("Foo" → List("foo1", "foo2"),  "Bar" → List("bar1", "bar2"))
+
+        val toFilter = Seq("Transfer-Encoding", "Connection", "Host", "Content-Length") map (name ⇒ name → List("NOT!"))
+
+        assert(lists === (filterAndCapitalizeHeaders(arrays, out = true) map { case (k, v) ⇒ k → v.toList}))
+        assert(lists === filterAndCapitalizeHeaders(lists, out = true))
+        assert(lists === filterAndCapitalizeHeaders(lists ++ toFilter, out = true))
+    }
+
+    @Test def testSplit(): Unit = {
+
+        val expected = Seq(
+            ""                    → Seq(),
+            "  "                  → Seq(),
+            " GET "               → Seq("GET"),
+            " GET  POST  PUT "    → Seq("GET", "POST", "PUT"),
+            " GET  POST  PUT GET" → Seq("GET", "POST", "PUT", "GET")
+        )
+
+        for ((in, out) ← expected) {
+            assert(out === split[List](in))
+            assert(out === split[Array](in).to[List])
+            assert(out.to[Set] === split[Set](in))
+            assert(out.to[mutable.LinkedHashSet].to[List] === split[mutable.LinkedHashSet](in).toList)
+        }
     }
 }
